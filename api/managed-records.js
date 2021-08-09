@@ -9,35 +9,43 @@ window.path = "http://localhost:3000/records";
 
 //retrieve( { page:2, colors: ["red","brown"] } );   => { limit: x, offset: x, colors: [x,x,x] }
 const retrieve = (optionsObj) => {
+  // get page and colors
+  const page = optionsObj.page || 1; //2
+  const colorArr = optionsObj.colors || [
+    "red",
+    "brown",
+    "blue",
+    "yellow",
+    "green",
+  ]; //["red","brown"]
 
-    // get page and colors
-    let page = optionsObj.page || 1; //2
-    let colorArr = optionsObj.colors || ["red","brown","blue","yellow","green"]; //["red","brown"]
+  //convert page and color array into query string options: limit, offset, and color[]
+  const itemPerPage = 10; // process pages of 10 items at a time
+  const derivedStartIdx = (page - 1) * 10; // pg 1 => start @ idx 0; pg 2 => start @ idx 10; pg 3 => start @ idx 20 ...
 
-    //convert page and color array into query string options: limit, offset, and color[]
-    const itemPerPage = 10;                   // process pages of 10 items at a time
-    const derivedStartIdx = (page - 1) * 10;  // pg 1 => start @ idx 0; pg 2 => start @ idx 10; pg 3 => start @ idx 20 ...
+  // create URI as 'http://localhost:3000/records?limit=2&offset=0&color[]=brown&color[]=green'
+  let uriEndpoint = URI(window.path).search({
+    limit: itemPerPage,
+    offset: derivedStartIdx,
+    color: colorArr,
+  });
+  // let uriEndpoint = URI(window.path).search({ limit: itemPerPage, offset: derivedOffset, "color[]": colorArr });
 
-    // create URI as 'http://localhost:3000/records?limit=2&offset=0&color[]=brown&color[]=green'
-    let uriEndpoint = URI(window.path).search({ limit: itemPerPage, offset: derivedStartIdx, color: colorArr });
-    // let uriEndpoint = URI(window.path).search({ limit: itemPerPage, offset: derivedOffset, "color[]": colorArr });
-
-    fetch(uriEndpoint)
-        .then((res)=>{
-            log(res.json());    //check res.json() result
-            return res.json();
-        })
-        .then((data)=>{
-            log(`Endpoint Success:`, data);
-            //run the parse method here
-            generateResultObj(data);
-        })
-        .catch((err)=>{
-            console.log(`Endpoint Error:`, err);
-        });
-    
-
-}
+  fetch(uriEndpoint)
+    .then((res) => {
+      console.log(res);         //check res result
+      console.log(res.json());  //check res.json() result
+      return res.json();        //convert response object into a JS obj
+    })
+    .then((data) => {
+      log(`Endpoint Success:`, data);
+      //run the parse method here
+      return res.json(generateResultObj(data, page));
+    })
+    .catch((err) => {
+      console.log(`Endpoint Error:`, err);
+    });
+};
 
 export default retrieve;
 
