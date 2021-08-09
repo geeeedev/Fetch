@@ -22,7 +22,19 @@ const retrieve = (optionsObj) => {
     let uriEndpoint = URI(window.path).search({ limit: itemPerPage, offset: derivedStartIdx, color: colorArr });
     // let uriEndpoint = URI(window.path).search({ limit: itemPerPage, offset: derivedOffset, "color[]": colorArr });
 
-
+    fetch(uriEndpoint)
+        .then((res)=>{
+            log(res.json());    //check res.json() result
+            return res.json();
+        })
+        .then((data)=>{
+            log(`Endpoint Success:`, data);
+            //run the parse method here
+            generateResultObj(data);
+        })
+        .catch((err)=>{
+            console.log(`Endpoint Error:`, err);
+        });
     
 
 }
