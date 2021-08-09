@@ -5,7 +5,37 @@ import URI from "urijs";
 window.path = "http://localhost:3000/records";
 
 // Your retrieve function plus any additional functions go here ...
+const generateResultObj = (data, pg) => {
 
+  //ids: [id, id, id],
+  const idList = data.map((item) => item.id);
+
+  //adding isPrimary key
+  const primColors = ["red", "blue", "yellow"];
+  const withPrimColorList = data.map((item) =>
+    primColors.includes(item.color)
+      ? { ...item, isPrimary: true }
+      : { ...item, isPrimary: false }
+  );
+
+  //open: [item, item, item],
+  const openList = withPrimColorList.filter(
+    (item) => item.disposition === "open"
+  );
+
+  //closedPrimaryCount: #,
+  const closedPrimCount = withPrimColorList.filter(
+    (item) => item.disposition === "closed" && item.isPrimary === true
+  ).length;
+
+  //previousPage: # || null
+  const prevPg = pg > 1 && pg - 1 < Math.ceil(data.length / 10) ? pg - 1 : null;
+
+  //nextPage: # || null
+  const nxtPg = pg < Math.ceil(data.length / 10) ? pg + 1 : null;
+
+
+};
 
 //retrieve( { page:2, colors: ["red","brown"] } );   => { limit: x, offset: x, colors: [x,x,x] }
 const retrieve = (optionsObj) => {
