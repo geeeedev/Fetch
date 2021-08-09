@@ -34,7 +34,13 @@ const generateResultObj = (data, pg) => {
   //nextPage: # || null
   const nxtPg = pg < Math.ceil(data.length / 10) ? pg + 1 : null;
 
-
+  return {
+    ids: idList,
+    open: openList,
+    closedPrimaryCount: closedPrimCount,
+    previousPage: prevPg,
+    nextPage: nxtPg,
+  };
 };
 
 //retrieve( { page:2, colors: ["red","brown"] } );   => { limit: x, offset: x, colors: [x,x,x] }
