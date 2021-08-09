@@ -69,12 +69,12 @@ const retrieve = (optionsObj) => {
 
   fetch(uriEndpoint)
     .then((res) => {
-      console.log(res);         //check res result
-      console.log(res.json());  //check res.json() result
+      console.log(`fetch-res`,res);         //check res result
+      console.log(`fetch-res.json`,res.json());  //check res.json() result
       return res.json();        //convert response object into a JS obj
     })
     .then((data) => {
-      log(`Endpoint Success:`, data);
+      log(`Endpoint Success-data:`, data);
       //run the parse method here
       return res.json(generateResultObj(data, page));
     })
